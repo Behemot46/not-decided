@@ -9,4 +9,6 @@ Needs Playwright and a Chromium. Environment variables (all optional):
 `PLAYWRIGHT_PATH` (module path), `CHROMIUM_PATH` (browser binary), `THREE_JS_PATH` (local three.min.js
 so the test works offline).
 
-Run it before every commit or publish that touches `index.html`.
+`gameplay-smoke.mjs` checks the sausage bonuses, sausage currency, magnet, hearts and a 60 s bot run.
+
+Run both before every commit, publish or deploy that touches `index.html`.
