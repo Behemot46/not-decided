@@ -108,6 +108,8 @@ button.btn.ghost{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:non
 .sw .pr{font-size:12px;color:var(--gold)}
 .sw.lock{opacity:.8}
 
+#menu{background:linear-gradient(180deg,rgba(8,9,26,0) 0%,rgba(8,9,26,0) 26%,rgba(8,9,26,.7) 50%,rgba(8,9,26,.92) 100%);justify-content:flex-start;padding-top:calc(var(--st) + 33vh)}
+@media (max-height:700px){#menu{padding-top:calc(var(--st) + 28vh)}}
 @media (max-height:640px){.logo{font-size:44px}.panel{gap:8px}button.btn.big{min-height:60px}.speedo b{font-size:40px}}
 @media (orientation:landscape) and (max-height:520px){.hud-side,.coinbox{top:calc(var(--st) + 56px)}#mini{width:64px;height:64px}.speedo{bottom:calc(var(--sb) + 48px)}}
 </style>
@@ -511,6 +513,36 @@ const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 24, 12), new THREE.Shad
 sky.renderOrder = -10; sky.frustumCulled = false;
 scene.add(sky);
 
+const SIGN_TEXT = 'המשחק של שחר';
+const signTex = canvasTex(1024, 400, (g, w, h) => {
+  const rr = (x, y, ww, hh, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + ww, y, x + ww, y + hh, r); g.arcTo(x + ww, y + hh, x, y + hh, r); g.arcTo(x, y + hh, x, y, r); g.arcTo(x, y, x + ww, y, r); g.closePath(); };
+  g.lineJoin = 'round';
+  g.shadowColor = '#19e3ff'; g.shadowBlur = 30; g.strokeStyle = '#a8f7ff'; g.lineWidth = 10; rr(26, 26, w - 52, h - 52, 52); g.stroke();
+  g.shadowColor = '#ff2e93'; g.shadowBlur = 22; g.strokeStyle = '#ffb8de'; g.lineWidth = 5; rr(56, 56, w - 112, h - 112, 32); g.stroke();
+  g.direction = 'rtl'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  let fs = 170;
+  const face = (n) => '900 ' + n + 'px "Arial Hebrew","Noto Sans Hebrew","Segoe UI",system-ui,Arial,sans-serif';
+  g.font = face(fs);
+  while (g.measureText(SIGN_TEXT).width > w - 230 && fs > 40) { fs -= 4; g.font = face(fs); }
+  g.shadowColor = '#ff2e93'; g.fillStyle = '#ff2e93';
+  g.shadowBlur = 60; g.fillText(SIGN_TEXT, w / 2, h / 2 + 8);
+  g.shadowBlur = 30; g.fillText(SIGN_TEXT, w / 2, h / 2 + 8);
+  g.shadowColor = '#ffffff'; g.shadowBlur = 10; g.fillStyle = '#fff2fa'; g.fillText(SIGN_TEXT, w / 2, h / 2 + 8);
+}, false);
+const haloTex = canvasTex(128, 128, (g, w, h) => {
+  const gr = g.createRadialGradient(w / 2, h / 2, 2, w / 2, h / 2, w / 2);
+  gr.addColorStop(0, 'rgba(255,60,170,.55)'); gr.addColorStop(.5, 'rgba(120,50,255,.22)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, w, h);
+}, false);
+const signMat = new THREE.MeshBasicMaterial({ map: signTex, transparent: true, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false });
+const signGrp = new THREE.Group();
+const signMesh = new THREE.Mesh(new THREE.PlaneGeometry(300, 117), signMat);
+const haloMesh = new THREE.Mesh(new THREE.PlaneGeometry(560, 330), new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false }));
+signMesh.renderOrder = haloMesh.renderOrder = -9;
+signMesh.frustumCulled = haloMesh.frustumCulled = false;
+signGrp.add(haloMesh, signMesh); haloMesh.position.z = -1;
+scene.add(signGrp);
+
 const starsGeo = new THREE.BufferGeometry();
 {
   const r = mulberry(5), a = new Float32Array(220 * 3);
@@ -533,6 +565,9 @@ scene.add(road);
   const railMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
   const c0 = [.30, .32, .38], c1 = [.62, .66, .74];
   for (const side of [-1, 1]) scene.add(new THREE.Mesh(Track.wall(side * RAIL, 0, 0.95, c0, c1), railMat));
+  const neonL = new THREE.MeshBasicMaterial({ color: 0x19e3ff }), neonR = new THREE.MeshBasicMaterial({ color: 0xff2e93 });
+  scene.add(new THREE.Mesh(Track.ribbon(-RAIL - 0.12, -RAIL + 0.12, 0.99, false), neonL));
+  scene.add(new THREE.Mesh(Track.ribbon(RAIL - 0.12, RAIL + 0.12, 0.99, false), neonR));
   // verge strips beside the rails
   const vergeMat = new THREE.MeshLambertMaterial({ color: 0x2c312f });
   scene.add(new THREE.Mesh(Track.ribbon(RAIL, RAIL + 9, -0.1, false), vergeMat));
@@ -555,6 +590,8 @@ const buildingMeshes = [];
   const dims = [[18, 50, 18], [24, 90, 20], [16, 34, 26], [30, 120, 22]];
   const per = [[], [], [], []];
   const r = mulberry(1234), tmpO = {}, m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), ps = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
+  const NEON = [0xff2e93, 0x19e3ff, 0x9b5cff, 0x39ff88, 0xffc83d];
+  const neonList = [];
   const place = (s, side, off, tall) => {
     Track.frame(s, tmpO);
     const v = (r() * 4) | 0, d = dims[v];
@@ -565,6 +602,11 @@ const buildingMeshes = [];
     sc.set(k, ky, k);
     m4.compose(ps, q, sc);
     per[v].push([m4.clone(), 0.62 + r() * 0.38, r()]);
+    for (let n = 0; n < (r() < 0.6 ? (r() < 0.4 ? 2 : 1) : 0); n++) {
+      const hh = d[1] * ky, mm = new THREE.Matrix4();
+      mm.compose(new THREE.Vector3(ps.x, hh * (0.25 + r() * 0.7), ps.z), q, new THREE.Vector3(d[0] * k + 0.7, 0.7 + r() * 0.5, d[2] * k + 0.7));
+      neonList.push([mm, NEON[(r() * NEON.length) | 0]]);
+    }
   };
   for (let s = 0; s < L; s += 26) for (const side of [-1, 1]) {
     place(s + r() * 8, side, r() * 30, false);
@@ -586,6 +628,10 @@ const buildingMeshes = [];
     im.frustumCulled = false;
     scene.add(im); buildingMeshes.push(im);
   });
+  const nm = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial(), neonList.length);
+  const nc = new THREE.Color();
+  neonList.forEach((e, i) => { nm.setMatrixAt(i, e[0]); nc.setHex(e[1]); nm.setColorAt(i, nc); });
+  nm.frustumCulled = false; scene.add(nm);
 }
 
 /* Street lamps + overpasses */
@@ -622,15 +668,19 @@ const lampHeadMat = new THREE.MeshBasicMaterial({ color: 0xffe6a8, fog: true });
   }
   bridges.frustumCulled = false;
   scene.add(bridges);
+  const trimG = mergeBoxes([B(hw * 2 + 1.2, .22, .3, 0, 7.3, -1.2, 0xffffff), B(hw * 2 + 1.2, .22, .3, 0, 7.3, 1.2, 0xffffff)], 0xffffff);
+  const trim = new THREE.InstancedMesh(trimG, new THREE.MeshBasicMaterial({ vertexColors: true, color: 0xff2e93 }), nb);
+  for (let k = 0; k < nb; k++) { bridges.getMatrixAt(k, m4); trim.setMatrixAt(k, m4); }
+  trim.frustumCulled = false; scene.add(trim);
 }
 
 /* =====================================================================
    Time of day
    ===================================================================== */
 const TOD = [
-  { top: '#2b1a5c', bot: '#ff8a5e', hs: '#ffb18f', hg: '#2a1840', hi: 0.9, ds: '#ff9a6b', di: 0.85, win: 0.35, lamp: 0.6, star: 0.1 },
-  { top: '#04061a', bot: '#1d1b57', hs: '#5865b8', hg: '#10122a', hi: 0.6, ds: '#8090ff', di: 0.4, win: 1.0, lamp: 1.0, star: 1 },
-  { top: '#2f7fd6', bot: '#c4e5ff', hs: '#e6f2ff', hg: '#6f7d6e', hi: 1.05, ds: '#fff4d8', di: 0.95, win: 0.0, lamp: 0.1, star: 0 }
+  { top: '#06021c', bot: '#4a1380', hs: '#7a64f0', hg: '#14102e', hi: 0.85, ds: '#a58aff', di: 0.55, win: 1.0, lamp: 1.0, star: 1 },
+  { top: '#020a22', bot: '#0b4a86', hs: '#4f9bf0', hg: '#0c1a30', hi: 0.8, ds: '#7fc8ff', di: 0.5, win: 1.0, lamp: 1.0, star: 1 },
+  { top: '#15021f', bot: '#86125e', hs: '#e060b8', hg: '#26102a', hi: 0.85, ds: '#ff8ad0', di: 0.5, win: 1.0, lamp: 1.0, star: 1 }
 ];
 const todCache = TOD.map((p) => ({ top: new THREE.Color(p.top), bot: new THREE.Color(p.bot), hs: new THREE.Color(p.hs), hg: new THREE.Color(p.hg), ds: new THREE.Color(p.ds) }));
 const tmpC = new THREE.Color();
@@ -1232,6 +1282,12 @@ function render(alpha, dt) {
   const fov = camera.userData.baseFov + speedF * 5 + camera.userData.boost * 9;
   if (Math.abs(camera.fov - fov) > 0.05) { camera.fov = fov; camera.updateProjectionMatrix(); }
   sky.position.copy(camera.position); stars.position.copy(camera.position);
+  camera.getWorldDirection(tmpP); tmpP.y = 0; tmpP.normalize();
+  signGrp.position.set(camera.position.x + tmpP.x * 430, camera.position.y + 215, camera.position.z + tmpP.z * 430);
+  signGrp.rotation.y = Math.atan2(-tmpP.x, -tmpP.z);
+  let fl = 0.92 + 0.08 * Math.sin(camT * 3.1);
+  if (Math.sin(camT * 1.9) * Math.sin(camT * 17.3) > 0.9) fl = 0.4;
+  signMat.color.setScalar(fl);
 
   /* speed lines */
   const pos = slGeo.attributes.position.array, ln = P.speed * 0.045;
