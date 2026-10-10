@@ -62,7 +62,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hi
 #nitroGlow{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .25s;
   background:radial-gradient(ellipse at center,rgba(25,227,255,0) 45%,rgba(60,120,255,.45) 100%)}
 #nitroGlow.on{opacity:1}
-#toast{position:absolute;left:12px;right:12px;top:calc(var(--st) + 112px);z-index:6;text-align:center;pointer-events:none;direction:rtl}
+#toast{position:absolute;left:12px;right:12px;top:calc(var(--st) + 112px);z-index:30;text-align:center;pointer-events:none;direction:rtl}
 .toast{display:inline-block;margin:4px auto;padding:10px 16px;border-radius:14px;font-weight:800;font-size:15px;color:#07120b;
   background:linear-gradient(90deg,#5dff9a,#19e3ff);box-shadow:0 6px 24px rgba(0,0,0,.4);animation:tst 2.6s ease forwards}
 @keyframes tst{0%{transform:translateY(-16px);opacity:0}10%{transform:none;opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
@@ -72,9 +72,16 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hi
 @keyframes tutp{50%{transform:scale(1.05)}}
 
 /* ---------- Panels ---------- */
-.panel{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;direction:rtl;
+.panel{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;text-align:center;direction:rtl;
   padding:calc(var(--st) + 18px) calc(var(--sr) + 20px) calc(var(--sb) + 18px) calc(var(--sl) + 20px);
-  background:linear-gradient(180deg,rgba(8,9,26,.25),rgba(8,9,26,.78) 60%,rgba(8,9,26,.9));overflow:auto}
+  background:linear-gradient(180deg,rgba(8,9,26,.25),rgba(8,9,26,.78) 60%,rgba(8,9,26,.9));overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+/* safe centering: short content is centered, tall content starts at the top and scrolls (never clipped above) */
+.panel>:first-child{margin-top:auto}.panel>:last-child{margin-bottom:auto}
+#menu>:first-child,#garage>:first-child{margin-top:0}#menu>:last-child,#garage>:last-child{margin-bottom:0}
+.panel button{touch-action:manipulation}
+.ghead{position:sticky;top:0;z-index:3;width:100%;display:flex;align-items:center;justify-content:center;gap:14px;padding:6px 0 10px;background:linear-gradient(180deg,rgba(8,9,26,.97) 75%,rgba(8,9,26,0))}
+.ghead h2{margin:0}
+.sfoot{position:sticky;bottom:0;z-index:3;width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 0 4px;background:linear-gradient(0deg,rgba(8,9,26,.97) 72%,rgba(8,9,26,0))}
 .panel.solid{background:rgba(8,9,26,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .logo{font-size:clamp(46px,16vw,84px);font-weight:900;font-style:italic;letter-spacing:2px;line-height:.95;direction:ltr;
   background:linear-gradient(180deg,#fff 10%,#19e3ff 55%,#ff2e93);-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -183,15 +190,14 @@ button.buy.no{background:rgba(255,255,255,.12);color:var(--dim)}
   </section>
 
   <section id="garage" class="panel solid hidden">
-    <h2 class="t">מוסך</h2>
-    <div class="chip"><span class="coin"></span> <b id="gCoins">0</b></div>
+    <div class="ghead"><h2 class="t">מוסך</h2><div class="chip"><span class="coin"></span> <b id="gCoins">0</b></div></div>
     <h3 style="margin:0;color:var(--dim);font-size:14px">צבע</h3>
     <div class="garage-grid" id="gPaint"></div>
     <h3 style="margin:0;color:var(--dim);font-size:14px">להבת נייטרו</h3>
     <div class="garage-grid" id="gFlame"></div>
     <h3 style="margin:0;color:var(--dim);font-size:14px">שדרוגים לרכב ולנשק</h3>
     <div class="uplist" id="gUp"></div>
-    <button class="btn" id="btnGarageBack">חזרה</button>
+    <div class="sfoot"><button class="btn" id="btnGarageBack">חזרה</button></div>
   </section>
 
   <section id="pause" class="panel solid hidden">
@@ -218,8 +224,8 @@ button.buy.no{background:rgba(255,255,255,.12);color:var(--dim)}
       <div class="stat"><b id="oNear">0</b><small>כמעט-פגיעות</small></div>
     </div>
     <div class="missions" id="oMissionsWrap"><h3>משימות היום</h3><div id="oMissions"></div></div>
-    <button class="btn big" id="btnAgain">עוד פעם</button>
-    <div class="row"><button class="btn ghost" id="btnGarage2">מוסך</button><button class="btn ghost" id="btnMenu2">תפריט</button></div>
+    <div class="sfoot"><button class="btn big" id="btnAgain">עוד פעם</button>
+    <div class="row"><button class="btn ghost" id="btnGarage2">מוסך</button><button class="btn ghost" id="btnMenu2">תפריט</button></div></div>
   </section>
 </div>
 
@@ -1856,7 +1862,9 @@ const endTouch = (e) => {
 touchEl.addEventListener('pointerup', endTouch);
 touchEl.addEventListener('pointercancel', endTouch);
 touchEl.addEventListener('contextmenu', (e) => e.preventDefault());
-document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+/* block page scroll/zoom only outside the menus: a global preventDefault here froze touch scrolling in the garage */
+document.addEventListener('touchmove', (e) => { if (!(e.target && e.target.closest && e.target.closest('.panel'))) e.preventDefault(); }, { passive: false });
+['gesturestart', 'gesturechange', 'gestureend'].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault()));
 function holdSteer() {
   if (!tp || tp.moved || tp.zone === 0) return;
   const now = performance.now();
@@ -1901,6 +1909,7 @@ $('#btnGarage').addEventListener('click', () => openGarage('menu'));
 $('#btnGarage2').addEventListener('click', () => openGarage('over'));
 $('#btnGarageBack').addEventListener('click', () => { show('garage', false); show(openGarage.from || 'menu', true); if (openGarage.from !== 'over') { $('#mCoins').textContent = fmt(save.coins); } });
 function renderGarage() {
+  const pan = $('#garage'), keepScroll = pan.scrollTop;
   $('#gCoins').textContent = fmt(save.coins);
   const build = (host, list, ownKey, selKey, apply) => {
     host.innerHTML = '';
@@ -1929,7 +1938,7 @@ function renderGarage() {
       b.innerHTML = '<span class="coin"></span>' + price;
       b.addEventListener('click', () => {
         if (save.coins < price) { toast('אין מספיק מטבעות'); return; }
-        save.coins -= price; save.up[u.id] = lvl + 1; persist(); refreshPlayerLook(); Sfx.ui(); renderGarage();
+        save.coins -= price; save.up[u.id] = lvl + 1; persist(); refreshPlayerLook(); Sfx.ui(); renderGarage(); toast('נקנה: ' + u.n + ' ' + ltr('(' + (lvl + 1) + '/' + max + ')'));
       });
       row.appendChild(b);
     }
@@ -1937,6 +1946,7 @@ function renderGarage() {
   });
   build($('#gPaint'), PAINTS, 'ownPaint', 'paint', refreshPlayerLook);
   build($('#gFlame'), FLAMES, 'ownFlame', 'flame', refreshPlayerLook);
+  pan.scrollTop = keepScroll;
 }
 
 /* =====================================================================
@@ -1954,7 +1964,7 @@ window.RingRush = {
   state: () => ({ state: G.state, dist: P.dist, speed: P.speed, lives: P.lives, score: P.score, lap: P.lapsDone, lane: P.lane, lat: P.lat, combo: P.combo, coins: P.coins, q: qLevel, near: R.near, inv: P.inv }),
   cars: () => traffic.filter((c) => c.active && c.state === 0).map((c) => ({ rel: signedRel(c.s, pS()), lat: c.lat, len: c.len, wid: c.wid, speed: c.speed, type: c.type, lane: c.lane })),
   coinsNear: () => coins.filter((c) => c.active).map((c) => ({ rel: signedRel(c.s, pS()), lat: c.lat })),
-  dbg: { scene, camera, road, ground, roadTex }, act, place(k, ahead, lane) { placePickup(pS() + ahead, lane * LANE_W, k); }, fire: fireMissile, chorizo: fireChorizo, boost(k) { collectPickup({ kind: k }); }, pickups: () => pickups.filter((q) => q.active).map((q) => ({ rel: signedRel(q.s, pS()), lat: q.lat, kind: q.kind })), mine: dropMine, spawnCop, setUp(k, v) { save.up[k] = v; refreshPlayerLook(); },
+  dbg: { scene, camera, road, ground, roadTex }, endRun, act, place(k, ahead, lane) { placePickup(pS() + ahead, lane * LANE_W, k); }, fire: fireMissile, chorizo: fireChorizo, boost(k) { collectPickup({ kind: k }); }, pickups: () => pickups.filter((q) => q.active).map((q) => ({ rel: signedRel(q.s, pS()), lat: q.lat, kind: q.kind })), mine: dropMine, spawnCop, setUp(k, v) { save.up[k] = v; refreshPlayerLook(); },
   cops: () => cops.filter((c) => c.active).map((c) => ({ rel: signedRel(c.s, pS()), lat: c.lat })),
   mines: () => mines.filter((m) => m.active).map((m) => ({ rel: signedRel(m.s, pS()), lat: m.lat, owner: m.owner })),
   ammo: () => ({ missiles: P.missiles, mines: P.mines, chorizo: P.chorizo, kills: P.kills, maxLives: P.maxLives, turbo: P.turboT, power: P.powerT, food: R.food }),
