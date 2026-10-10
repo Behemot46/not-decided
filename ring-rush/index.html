@@ -108,8 +108,30 @@ button.btn.ghost{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:non
 .sw .pr{font-size:12px;color:var(--gold)}
 .sw.lock{opacity:.8}
 
-#menu{background:linear-gradient(180deg,rgba(8,9,26,0) 0%,rgba(8,9,26,0) 26%,rgba(8,9,26,.7) 50%,rgba(8,9,26,.92) 100%);justify-content:flex-start;padding-top:calc(var(--st) + 33vh)}
-@media (max-height:700px){#menu{padding-top:calc(var(--st) + 28vh)}}
+#menu{background:linear-gradient(180deg,rgba(8,9,26,0) 0%,rgba(8,9,26,0) 26%,rgba(8,9,26,.7) 50%,rgba(8,9,26,.92) 100%);justify-content:flex-start;padding-top:calc(var(--st) + 37vh)}
+@media (max-height:700px){#menu{padding-top:calc(var(--st) + 33vh)}}
+.wbtns{position:absolute;right:calc(var(--sr) + 14px);bottom:calc(var(--sb) + 56px);display:flex;gap:12px;direction:ltr}
+.wb{pointer-events:auto;position:relative;width:64px;height:64px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:rgba(10,12,28,.62);color:#fff;display:grid;place-items:center;padding:0;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 0 18px rgba(255,46,147,.4);touch-action:none}
+.wb.m{box-shadow:0 0 18px rgba(25,227,255,.45)}
+.wb svg{width:32px;height:32px;display:block}
+.wb b{position:absolute;top:-8px;right:-4px;min-width:26px;height:26px;border-radius:13px;background:var(--gold);color:#1a1200;font-size:15px;display:grid;place-items:center;padding:0 6px}
+.wb.empty{opacity:.4}
+.wb:active{transform:scale(.92)}
+#siren{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0}
+#siren.on{opacity:1;animation:sir .5s steps(2) infinite}
+@keyframes sir{0%{box-shadow:inset 0 0 90px rgba(255,30,60,.6)}50%{box-shadow:inset 0 0 90px rgba(40,90,255,.6)}}
+#warn{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 150px);z-index:4;text-align:center;pointer-events:none;direction:rtl}
+#warn span{display:inline-block;padding:8px 18px;border-radius:14px;background:rgba(255,30,60,.88);font-weight:900;font-size:18px;animation:warn .5s steps(2) infinite}
+@keyframes warn{50%{background:rgba(40,90,255,.92)}}
+.uplist{display:flex;flex-direction:column;gap:8px;width:min(92vw,380px)}
+.up{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.07);text-align:right}
+.up .ut{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.up b{font-size:16px}.up small{color:var(--dim);font-size:12px;line-height:1.35}
+.pips{display:flex;gap:5px;margin-top:3px}.pip{width:20px;height:6px;border-radius:3px;background:rgba(255,255,255,.18)}.pip.on{background:var(--neon);box-shadow:0 0 8px var(--neon)}
+button.buy{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:900;font-size:15px;min-height:48px;min-width:88px;border-radius:14px;color:#1a1200;background:linear-gradient(180deg,#ffd978,#ffc83d);display:flex;align-items:center;justify-content:center;gap:6px}
+button.buy.no{background:rgba(255,255,255,.12);color:var(--dim)}
+.maxed{color:var(--ok);font-weight:900;font-size:13px;min-width:88px;text-align:center}
 @media (max-height:640px){.logo{font-size:44px}.panel{gap:8px}button.btn.big{min-height:60px}.speedo b{font-size:40px}}
 @media (orientation:landscape) and (max-height:520px){.hud-side,.coinbox{top:calc(var(--st) + 56px)}#mini{width:64px;height:64px}.speedo{bottom:calc(var(--sb) + 48px)}}
 </style>
@@ -129,11 +151,15 @@ button.btn.ghost{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:non
     <div class="hud-side"><span id="lap">LAP 1</span><canvas id="mini"></canvas></div>
     <div class="speedo"><b id="kmh">0</b><small>KM/H</small></div>
     <div class="nitro" id="nitro"><div id="nitroFill"></div><span>NITRO</span></div>
+    <div class="wbtns">
+      <button class="wb" id="btnMine" aria-label="מוקש"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="6" fill="#ff2e5b" stroke="#fff"/><path d="M12 4v3M4.5 7.5l2.2 2.2M19.5 7.5l-2.2 2.2M3 13h3M18 13h3" stroke="#fff"/><circle cx="12" cy="13" r="2" fill="#fff" stroke="none"/></svg><b id="mnCnt">2</b></button>
+      <button class="wb m" id="btnMissile" aria-label="טיל"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2c3 2.500 4.500 6 4.500 10v4l-2 2h-5l-2-2v-4C7.500 8 9 4.500 12 2z" fill="#19e3ff" stroke="#fff"/><circle cx="12" cy="9.500" r="1.600" fill="#06101a" stroke="none"/><path d="M7.500 14l-3 3.500V20l3-1.500M16.500 14l3 3.500V20l-3-1.500" stroke="#ff2e93"/></svg><b id="msCnt">3</b></button>
+    </div>
   </div>
-  <div id="flash"></div><div id="nitroGlow"></div>
+  <div id="flash"></div><div id="nitroGlow"></div><div id="siren"></div><div id="warn" class="hidden"><span id="warnTxt">שוטר מאחור</span></div>
   <div id="banners"></div>
   <div id="toast"></div>
-  <div id="tut" class="hidden"><div>החלק או הקש בצדדים להחלפת נתיב</div><br><div>הקשה במרכז = נייטרו</div></div>
+  <div id="tut" class="hidden"><div>החלק או הקש בצדדים להחלפת נתיב</div><br><div>הקשה במרכז = נייטרו</div><br><div>כפתורים בפינה: טיל ומוקש</div></div>
 
   <section id="menu" class="panel">
     <div class="logo">RING<br>RUSH</div>
@@ -157,6 +183,8 @@ button.btn.ghost{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:non
     <div class="garage-grid" id="gPaint"></div>
     <h3 style="margin:0;color:var(--dim);font-size:14px">להבת נייטרו</h3>
     <div class="garage-grid" id="gFlame"></div>
+    <h3 style="margin:0;color:var(--dim);font-size:14px">שדרוגים לרכב ולנשק</h3>
+    <div class="uplist" id="gUp"></div>
     <button class="btn" id="btnGarageBack">חזרה</button>
   </section>
 
@@ -180,6 +208,8 @@ button.btn.ghost{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:non
       <div class="stat"><b id="oCombo">0</b><small>קומבו כמעט-פגיעות</small></div>
       <div class="stat"><b id="oCoins">0</b><small>מטבעות</small></div>
       <div class="stat"><b id="oTotal">0</b><small>סה״כ מטבעות</small></div>
+      <div class="stat"><b id="oKills">0</b><small>הושמדו</small></div>
+      <div class="stat"><b id="oNear">0</b><small>כמעט-פגיעות</small></div>
     </div>
     <div class="missions" id="oMissionsWrap"><h3>משימות היום</h3><div id="oMissions"></div></div>
     <button class="btn big" id="btnAgain">עוד פעם</button>
@@ -216,7 +246,7 @@ const store = {
 };
 const save = Object.assign({
   coins: 0, best: 0, bestLaps: 0, paint: 0, flame: 0, ownPaint: [0], ownFlame: [0],
-  muted: false, tut: false, mission: { day: '', done: [] }, runs: 0
+  muted: false, tut: false, mission: { day: '', done: [] }, runs: 0, up: {}
 }, store.get('ringrush.v1', {}));
 const persist = () => store.set('ringrush.v1', save);
 
@@ -244,9 +274,19 @@ const MISSION_POOL = [
   { id: 'kmh250', t: 'הגע ל-250 קמ״ש', f: (r) => r.maxKmh >= 250 },
   { id: 'score12k', t: 'השג 12,000 נקודות', f: (r) => r.score >= 12000 },
   { id: 'laps2', t: 'סיים 2 הקפות', f: (r) => r.laps >= 2 },
-  { id: 'nitro3', t: 'השתמש בנייטרו 3 פעמים', f: (r) => r.nitroUses >= 3 }
+  { id: 'nitro3', t: 'השתמש בנייטרו 3 פעמים', f: (r) => r.nitroUses >= 3 },
+  { id: 'kills5', t: 'הרוס 5 מכוניות', f: (r) => r.kills >= 5 }
 ];
 const MISSION_REWARD = 80;
+const UPGRADES = [
+  { id: 'sight', n: 'כוונת', d: ['נועלת על המכונית שלפניך ומנווטת אליה את הטיל', 'נועלת גם על הנתיבים הסמוכים', 'נועלת על כל הכביש, טילים מהירים יותר'], cost: [120, 300, 650] },
+  { id: 'ramF', n: 'פרונט ניגוח', d: ['מנפץ רכבים קטנים בהתנגשות חזיתית, בלי נזק', 'מנפץ גם אוטובוסים', 'מנפץ גם משאיות'], cost: [150, 350, 800] },
+  { id: 'ramS', n: 'להבי צד', d: ['מנפצים רכבים קטנים שנוגעים בהם מהצד', 'מנפצים גם ואנים', 'מנפצים גם אוטובוסים ומשאיות'], cost: [150, 350, 800] },
+  { id: 'missiles', n: 'מחסנית טילים', d: ['מתחילים עם 5 טילים', 'מתחילים עם 7 טילים', 'מתחילים עם 9 טילים'], cost: [80, 200, 450] },
+  { id: 'mines', n: 'מחסנית מוקשים', d: ['מתחילים עם 4 מוקשים', 'מתחילים עם 6 מוקשים', 'מתחילים עם 8 מוקשים'], cost: [80, 200, 450] },
+  { id: 'armor', n: 'שריון', d: ['לב נוסף בכל ריצה', 'עוד לב נוסף'], cost: [200, 500] }
+];
+const upLvl = (id) => (save.up && save.up[id]) | 0;
 
 /* =====================================================================
    Renderer / scene
@@ -364,6 +404,12 @@ const SPEC = {
     parts: [B(.35, .5, 1.7, 0, .75, 0, 'paint'), B(.45, .8, .45, 0, 1.35, -.1, DARK), B(.3, .3, .3, 0, 1.9, .05, 'paint'),
       B(.18, .66, .66, 0, .33, .72, TIRE), B(.18, .66, .66, 0, .33, -.72, TIRE)],
     lights: [B(.25, .1, .05, 0, .85, -.9, 0xff2030), B(.2, .1, .05, 0, .9, .9, 0xe8f6ff)]
+  },
+  cop: {
+    len: 4.6, wid: 1.9,
+    parts: [B(1.9, .62, 4.5, 0, .62, 0, 'paint'), B(1.92, .22, 2.4, 0, .7, -.1, 0x15203a), B(1.55, .5, 2.3, 0, 1.18, -.2, GLASS), B(1.5, .06, 1.8, 0, 1.46, -.2, 0xe9edf5),
+      ...wheelSet(.92, .35, [1.4, -1.4], .3, .7)],
+    lights: [B(.5, .12, .05, .62, .8, -2.26, 0xff2030), B(.5, .12, .05, -.62, .8, -2.26, 0xff2030), B(.45, .1, .05, .7, .7, 2.26, 0xe8f6ff), B(.45, .1, .05, -.7, .7, 2.26, 0xe8f6ff)]
   }
 };
 const CAR_PAINTS = [0xd8dbe6, 0x2d3350, 0xb3213a, 0x2f7bd8, 0xe8c13f, 0x39a36b, 0x25252b, 0xa9acba, 0xe86a33];
@@ -513,21 +559,24 @@ const sky = new THREE.Mesh(new THREE.SphereGeometry(500, 24, 12), new THREE.Shad
 sky.renderOrder = -10; sky.frustumCulled = false;
 scene.add(sky);
 
-const SIGN_TEXT = 'המשחק של שחר';
-const signTex = canvasTex(1024, 400, (g, w, h) => {
+const SIGN_L1 = 'המשחק של', SIGN_L2 = 'שחר גרוסמן', SIGN_L3 = 'המלך מרחוב שלדג';
+const signTex = canvasTex(1024, 560, (g, w, h) => {
   const rr = (x, y, ww, hh, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + ww, y, x + ww, y + hh, r); g.arcTo(x + ww, y + hh, x, y + hh, r); g.arcTo(x, y + hh, x, y, r); g.arcTo(x, y, x + ww, y, r); g.closePath(); };
   g.lineJoin = 'round';
-  g.shadowColor = '#19e3ff'; g.shadowBlur = 30; g.strokeStyle = '#a8f7ff'; g.lineWidth = 10; rr(26, 26, w - 52, h - 52, 52); g.stroke();
-  g.shadowColor = '#ff2e93'; g.shadowBlur = 22; g.strokeStyle = '#ffb8de'; g.lineWidth = 5; rr(56, 56, w - 112, h - 112, 32); g.stroke();
+  g.shadowColor = '#19e3ff'; g.shadowBlur = 30; g.strokeStyle = '#a8f7ff'; g.lineWidth = 10; rr(26, 26, w - 52, h - 52, 56); g.stroke();
+  g.shadowColor = '#ff2e93'; g.shadowBlur = 22; g.strokeStyle = '#ffb8de'; g.lineWidth = 5; rr(56, 56, w - 112, h - 112, 34); g.stroke();
   g.direction = 'rtl'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  let fs = 170;
   const face = (n) => '900 ' + n + 'px "Arial Hebrew","Noto Sans Hebrew","Segoe UI",system-ui,Arial,sans-serif';
-  g.font = face(fs);
-  while (g.measureText(SIGN_TEXT).width > w - 230 && fs > 40) { fs -= 4; g.font = face(fs); }
-  g.shadowColor = '#ff2e93'; g.fillStyle = '#ff2e93';
-  g.shadowBlur = 60; g.fillText(SIGN_TEXT, w / 2, h / 2 + 8);
-  g.shadowBlur = 30; g.fillText(SIGN_TEXT, w / 2, h / 2 + 8);
-  g.shadowColor = '#ffffff'; g.shadowBlur = 10; g.fillStyle = '#fff2fa'; g.fillText(SIGN_TEXT, w / 2, h / 2 + 8);
+  const fit = (txt, size, maxW) => { let fs = size; g.font = face(fs); while (g.measureText(txt).width > maxW && fs > 30) { fs -= 4; g.font = face(fs); } };
+  const line = (txt, size, maxW, y, glow, core, passes) => {
+    fit(txt, size, maxW);
+    g.shadowColor = glow; g.fillStyle = glow;
+    for (let i = 0; i < passes; i++) { g.shadowBlur = 56 - i * 16; g.fillText(txt, w / 2, y); }
+    g.shadowColor = '#ffffff'; g.shadowBlur = 8; g.fillStyle = core; g.fillText(txt, w / 2, y);
+  };
+  line(SIGN_L1, 66, w - 280, h * 0.2, '#19e3ff', '#e9fdff', 2);
+  line(SIGN_L2, 200, w - 190, h * 0.5, '#ff2e93', '#fff2fa', 3);
+  line(SIGN_L3, 92, w - 190, h * 0.79, '#ff9a1f', '#fff1c2', 2);
 }, false);
 const haloTex = canvasTex(128, 128, (g, w, h) => {
   const gr = g.createRadialGradient(w / 2, h / 2, 2, w / 2, h / 2, w / 2);
@@ -536,8 +585,8 @@ const haloTex = canvasTex(128, 128, (g, w, h) => {
 }, false);
 const signMat = new THREE.MeshBasicMaterial({ map: signTex, transparent: true, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false });
 const signGrp = new THREE.Group();
-const signMesh = new THREE.Mesh(new THREE.PlaneGeometry(300, 117), signMat);
-const haloMesh = new THREE.Mesh(new THREE.PlaneGeometry(560, 330), new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false }));
+const signMesh = new THREE.Mesh(new THREE.PlaneGeometry(300, 164), signMat);
+const haloMesh = new THREE.Mesh(new THREE.PlaneGeometry(640, 420), new THREE.MeshBasicMaterial({ map: haloTex, transparent: true, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false }));
 signMesh.renderOrder = haloMesh.renderOrder = -9;
 signMesh.frustumCulled = haloMesh.frustumCulled = false;
 signGrp.add(haloMesh, signMesh); haloMesh.position.z = -1;
@@ -738,6 +787,23 @@ function refreshPlayerLook() {
   player.body.geometry = mergeBoxes(SPEC.sport.parts, PAINTS[save.paint].c);
   player.glow.material.color.setHex(PAINTS[save.paint].c);
   player.flameMat.color.setHex(FLAMES[save.flame].c);
+  buildRams();
+}
+const ramMesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshLambertMaterial({ vertexColors: true }));
+player.g.add(ramMesh);
+function buildRams() {
+  const f = upLvl('ramF'), sd = upLvl('ramS'), col = [0, 0x9aa3b8, 0xffa24a, 0xff2e93], parts = [];
+  if (f) {
+    parts.push(B(2.05, .4, .45, 0, .46, 2.55, col[f]));
+    for (let k = 0; k <= f + 1; k++) parts.push(B(.2, .2, .5 + f * .15, -.8 + k * (1.6 / (f + 1)), .5, 2.95, col[f]));
+  }
+  if (sd) for (const sx of [-1, 1]) {
+    parts.push(B(.12, .5, 2.8, sx * 1.04, .55, .1, col[sd]));
+    if (sd >= 2) for (const z of [1.1, .1, -.9]) parts.push(B(.45 + sd * .1, .14, .16, sx * 1.2, .6, z, col[sd]));
+  }
+  ramMesh.geometry.dispose();
+  ramMesh.geometry = mergeBoxes(parts, 0xffffff);
+  ramMesh.visible = parts.length > 0;
 }
 
 /* Traffic pool */
@@ -766,6 +832,38 @@ coinMesh.frustumCulled = false;
 scene.add(coinMesh);
 const hideM = new THREE.Matrix4().makeScale(0, 0, 0);
 for (let i = 0; i < COIN_N; i++) coinMesh.setMatrixAt(i, hideM);
+
+/* Weapons: missiles, mines, explosions, police, reticle */
+const missileGeo = mergeBoxes([B(.3, .3, 1.8, 0, .95, 0, 0xe8ecf5), B(.32, .32, .55, 0, .95, 1.1, 0xff2e3a), B(1.2, .06, .5, 0, .95, -.8, 0x20232c), B(.06, 1.2, .5, 0, .95, -.8, 0x20232c)], 0xffffff);
+const missileFlameGeo = new THREE.ConeGeometry(.22, 2.2, 8).rotateX(-Math.PI / 2).translate(0, .95, -2.0);
+const missiles = Array.from({ length: 6 }, () => {
+  const g = new THREE.Group(); g.rotation.order = 'YXZ';
+  g.add(new THREE.Mesh(missileGeo, new THREE.MeshLambertMaterial({ vertexColors: true })));
+  const fl = new THREE.Mesh(missileFlameGeo, new THREE.MeshBasicMaterial({ color: 0xffa040, transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  g.add(fl); g.visible = false; scene.add(g);
+  return { g, fl, active: false, s: 0, ps: 0, lat: 0, speed: 0, life: 0, target: null };
+});
+const MINE_N = 20;
+const mines = Array.from({ length: MINE_N }, () => ({ active: false, s: 0, lat: 0, owner: 0, t: 0, shown: false }));
+const mineBase = new THREE.InstancedMesh(new THREE.CylinderGeometry(.85, .95, .3, 12), new THREE.MeshLambertMaterial({ color: 0x2b2f3a }), MINE_N);
+const mineLamp = new THREE.InstancedMesh(new THREE.CylinderGeometry(.26, .26, .14, 8).translate(0, .22, 0), new THREE.MeshBasicMaterial(), MINE_N);
+mineBase.frustumCulled = mineLamp.frustumCulled = false;
+for (let i = 0; i < MINE_N; i++) { mineBase.setMatrixAt(i, hideM); mineLamp.setMatrixAt(i, hideM); mineLamp.setColorAt(i, new THREE.Color(0xff2e3a)); }
+scene.add(mineBase, mineLamp);
+const expl = Array.from({ length: 6 }, () => {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 9), new THREE.MeshBasicMaterial({ color: 0xffa23a, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  m.visible = false; scene.add(m); return { m, t: -1, size: 1 };
+});
+const cops = Array.from({ length: 2 }, () => {
+  const car = buildCar('cop', 0xf2f4fa);
+  const sr = new THREE.Mesh(mergeBoxes([B(.8, .16, .4, .42, 1.62, -.2, 0xff2030)], 0xffffff), lightMat);
+  const sb = new THREE.Mesh(mergeBoxes([B(.8, .16, .4, -.42, 1.62, -.2, 0x2a6bff)], 0xffffff), lightMat);
+  car.g.add(sr, sb); car.g.visible = false; scene.add(car.g);
+  return { g: car.g, sr, sb, active: false, s: 0, ps: 0, lat: 0, speed: 0, age: 0, rel: -100 };
+});
+const reticle = new THREE.Mesh(new THREE.RingGeometry(1.5, 1.9, 28), new THREE.MeshBasicMaterial({ color: 0xff3a5c, transparent: true, opacity: .95, side: THREE.DoubleSide, depthTest: false, depthWrite: false, fog: false }));
+reticle.add(new THREE.Mesh(new THREE.CircleGeometry(.22, 10), reticle.material));
+reticle.renderOrder = 6; reticle.visible = false; scene.add(reticle);
 
 /* Speed lines */
 const SL_N = 40;
@@ -860,6 +958,11 @@ const Sfx = (() => {
     lap() { [523, 659, 784, 1047].forEach((f, i) => tone(f, f, 0.18, 'triangle', 0.16, i * 0.09)); },
     over() { tone(330, 80, 1.1, 'sawtooth', 0.22); },
     ui() { tone(660, 880, 0.08, 'triangle', 0.12); },
+    missile() { noise(0.5, 0.3, 3500, 500, 'bandpass'); tone(300, 120, 0.4, 'sawtooth', 0.12); },
+    mine() { tone(880, 880, 0.07, 'square', 0.1); tone(660, 660, 0.07, 'square', 0.1, 0.1); },
+    ram() { noise(0.35, 0.5, 1800, 120); tone(110, 45, 0.3, 'square', 0.3); },
+    boom() { noise(0.5, 0.5, 2500, 90); tone(140, 40, 0.45, 'sawtooth', 0.25); },
+    siren(p) { tone(p ? 900 : 650, p ? 900 : 650, 0.34, 'square', 0.05); },
     musicStart() { if (!ctx || musicOn) return; musicOn = true; step = 0; nextT = ctx.currentTime + 0.1; musicTimer = setInterval(sched, 30); },
     musicStop() { musicOn = false; clearInterval(musicTimer); musicTimer = null; },
     suspend() { if (ctx && ctx.state === 'running') ctx.suspend(); },
@@ -889,20 +992,20 @@ const Sfx = (() => {
    ===================================================================== */
 const P = {
   dist: 0, pd: 0, lat: 0, plat: 0, lane: 0, vlat: 0, speed: 0, lives: 3, inv: 0, alive: true,
-  nitro: 100, nitroOn: false, brake: 0, combo: 0, comboT: 0, score: 0, coins: 0, lapsDone: 0, lapClean: true
+  nitro: 100, nitroOn: false, brake: 0, combo: 0, comboT: 0, score: 0, coins: 0, lapsDone: 0, lapClean: true, missiles: 3, mines: 2, maxLives: 3, kills: 0
 };
-const R = { maxCombo: 0, coins: 0, cleanLaps: 0, laps: 0, maxKmh: 0, score: 0, nitroUses: 0, near: 0 };
-const G = { state: 'menu', time: 0, rowAcc: 0, prevOpen: [-1, 0, 1], dyingT: 0, shake: 0, camLat: 0, coinIdx: 0, missionTick: 0, tutT: 0, menuT: 0 };
+const R = { maxCombo: 0, coins: 0, cleanLaps: 0, laps: 0, maxKmh: 0, score: 0, nitroUses: 0, near: 0, kills: 0 };
+const G = { state: 'menu', time: 0, rowAcc: 0, prevOpen: [-1, 0, 1], dyingT: 0, shake: 0, camLat: 0, coinIdx: 0, missionTick: 0, tutT: 0, menuT: 0, wCool: 0, target: null, copT: 15, sirenT: 0, sirenPh: 0, copNear: null };
 const pS = () => mod(P.dist, L);
 
 /* HUD refs */
 const el = {
   hud: $('#hud'), score: $('#score'), combo: $('#combo'), kmh: $('#kmh'), nitro: $('#nitro'), nitroFill: $('#nitroFill'), lap: $('#lap'),
   coinsRun: $('#coinsRun'), hearts: $('#hearts'), mini: $('#mini'), banners: $('#banners'), flash: $('#flash'), nitroGlow: $('#nitroGlow'),
-  toast: $('#toast'), tut: $('#tut')
+  toast: $('#toast'), tut: $('#tut'), siren: $('#siren'), warn: $('#warn'), warnTxt: $('#warnTxt'), ms: $('#msCnt'), mn: $('#mnCnt'), bMs: $('#btnMissile'), bMn: $('#btnMine')
 };
 const heartSvg = '<svg viewBox="0 0 24 24"><path fill="#ff2e5b" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.8 4.5 6.5 4.5c2 0 3.8 1.1 5.5 3 1.7-1.9 3.5-3 5.5-3 3.700 0 5.600 3.900 4.100 7.300C19.500 16.400 12 21 12 21z"/></svg>';
-for (let i = 0; i < 3; i++) { const d = document.createElement('div'); d.className = 'heart'; d.innerHTML = heartSvg; el.hearts.appendChild(d); }
+for (let i = 0; i < 5; i++) { const d = document.createElement('div'); d.className = 'heart'; d.innerHTML = heartSvg; el.hearts.appendChild(d); }
 const heartEls = [...el.hearts.children];
 const hc = {};
 function setText(key, node, v) { if (hc[key] !== v) { hc[key] = v; node.textContent = v; } }
@@ -950,13 +1053,19 @@ function checkMissions() {
 function resetTraffic() {
   for (const c of traffic) { c.active = false; c.g.visible = false; c.sl.visible = c.sr.visible = false; }
   for (let i = 0; i < COIN_N; i++) { coins[i].active = false; coinMesh.setMatrixAt(i, hideM); }
+  for (const m of missiles) { m.active = false; m.g.visible = false; }
+  for (const mi of mines) mi.active = false;
+  for (const cp of cops) { cp.active = false; cp.g.visible = false; }
+  for (const e of expl) { e.t = -1; e.m.visible = false; }
+  reticle.visible = false;
 }
 function startRun() {
   missions = todaysMissions();
-  Object.assign(P, { dist: 0, pd: 0, lat: 0, plat: 0, lane: 0, vlat: 0, speed: 30, lives: 3, inv: 1.2, alive: true, nitro: 60, nitroOn: false, brake: 0,
-    combo: 0, comboT: 0, score: 0, coins: 0, lapsDone: 0, lapClean: true });
-  Object.assign(R, { maxCombo: 0, coins: 0, cleanLaps: 0, laps: 0, maxKmh: 0, score: 0, nitroUses: 0, near: 0 });
-  Object.assign(G, { state: 'play', time: 0, rowAcc: 0, prevOpen: [-1, 0, 1], dyingT: 0, shake: 0, missionTick: 0, tutT: 0 });
+  const maxL = 3 + upLvl('armor');
+  Object.assign(P, { dist: 0, pd: 0, lat: 0, plat: 0, lane: 0, vlat: 0, speed: 30, lives: maxL, maxLives: maxL, inv: 1.2, alive: true, nitro: 60, nitroOn: false, brake: 0,
+    combo: 0, comboT: 0, score: 0, coins: 0, lapsDone: 0, lapClean: true, missiles: 3 + 2 * upLvl('missiles'), mines: 2 + 2 * upLvl('mines'), kills: 0 });
+  Object.assign(R, { maxCombo: 0, coins: 0, cleanLaps: 0, laps: 0, maxKmh: 0, score: 0, nitroUses: 0, near: 0, kills: 0 });
+  Object.assign(G, { state: 'play', time: 0, rowAcc: 0, prevOpen: [-1, 0, 1], dyingT: 0, shake: 0, missionTick: 0, tutT: 0, wCool: 0, target: null, copT: rnd(14, 22), sirenT: 0, copNear: null });
   resetTraffic();
   for (const d of [100, 150, 200]) spawnRow(d);
   show('menu', false); show('over', false); show('pause', false); show('garage', false);
@@ -965,7 +1074,8 @@ function startRun() {
   save.runs++; persist();
   Sfx.init(); Sfx.resume(); Sfx.musicStart();
   if (!save.tut) { el.tut.classList.remove('hidden'); G.tutT = 7; }
-  hc.hearts = null;
+  hc.hearts = null; hc.ammo = null;
+  el.siren.classList.remove('on'); el.warn.classList.add('hidden');
 }
 function endRun(reason) {
   G.state = 'over';
@@ -977,6 +1087,8 @@ function endRun(reason) {
   save.coins += P.coins; persist();
   $('#oTitle').textContent = 'התרסקות!';
   $('#oBest').classList.toggle('hidden', !isBest);
+  $('#oKills').textContent = P.kills; $('#oNear').textContent = R.near;
+  el.siren.classList.remove('on'); el.warn.classList.add('hidden');
   $('#oScore').textContent = fmt(P.score); $('#oLaps').textContent = P.lapsDone; $('#oKmh').textContent = R.maxKmh;
   $('#oCombo').textContent = R.maxCombo; $('#oCoins').textContent = P.coins; $('#oTotal').textContent = fmt(save.coins);
   renderMissions($('#oMissions'));
@@ -987,7 +1099,7 @@ function toMenu() {
   G.state = 'menu'; resetTraffic();
   Sfx.musicStop(); Sfx.engine(0, false, false);
   P.speed = 40; P.dist = P.pd = 0; P.lat = P.plat = 0; P.lane = 0; P.inv = 0; P.nitroOn = false; P.alive = true; P.lives = 3;
-  el.hud.classList.add('hidden'); el.tut.classList.add('hidden');
+  el.hud.classList.add('hidden'); el.tut.classList.add('hidden'); el.siren.classList.remove('on'); el.warn.classList.add('hidden');
   show('over', false); show('pause', false); show('garage', false); show('menu', true);
   $('#mBest').textContent = fmt(save.best); $('#mCoins').textContent = fmt(save.coins);
   renderMissions($('#mMissions'));
@@ -1020,7 +1132,15 @@ function pickRow() {
   return { blocked: [], open: [-1, 0, 1] };
 }
 function spawnRow(ahead) {
+  const prevOpen = G.prevOpen.slice();
   const sPos = pS() + ahead, row = pickRow(), rowSpeed = rnd(22, 28);
+  if (P.lapsDone >= 1 && row.open.length >= 2 && Math.random() < 0.22) {
+    const ml = row.open[(Math.random() * row.open.length) | 0], rest = row.open.filter((l) => l !== ml);
+    if (prevOpen.every((po) => rest.some((o) => Math.abs(o - po) <= 1))) {
+      placeMine(sPos + rnd(-3, 3), ml * LANE_W, 1);
+      row.open = rest; G.prevOpen = rest;
+    }
+  }
   const swChance = P.lapsDone >= 1 ? Math.min(0.28, 0.08 + 0.06 * P.lapsDone) : 0;
   for (const lane of row.blocked) {
     const type = pickType(), c = acquire(type) || acquire('sedan');
@@ -1057,22 +1177,158 @@ const act = {
     if (P.nitroOn) { P.nitroOn = false; return; }
     if (P.nitro >= 25) { P.nitroOn = true; R.nitroUses++; Sfx.nitro(); vib(20); if (!save.tut) { save.tut = true; persist(); el.tut.classList.add('hidden'); } }
   },
-  brake() { if (G.state === 'play') P.brake = 0.6; }
+  brake() { if (G.state === 'play') P.brake = 0.6; },
+  missile() { fireMissile(); },
+  mine() { dropMine(); }
 };
 
-function crash(c) {
+function carWorld(c, o) { Track.frame(c.s, o); o.px = Track.worldX(o, c.lat); o.pz = Track.worldZ(o, c.lat); return o; }
+function explode(x, y, z, size) {
+  const e = expl.find((q) => q.t < 0) || expl[0];
+  e.t = 0; e.size = size || 1; e.m.position.set(x, y, z); e.m.visible = true; e.m.material.opacity = 0.9; e.m.scale.setScalar(e.size);
+  emitSparks(x, y, z, Math.round(18 * (size || 1)));
+}
+function destroyCar(c, how, reward) {
+  c.state = 1; c.cs = 0; c.sl.visible = c.sr.visible = false;
+  const side = c.lat >= P.lat ? 1 : -1;
+  if (how === 'front') { c.vlat = side * rnd(2, 7); c.vy = rnd(9, 14); c.speed = Math.max(c.speed, P.speed) + 14; }
+  else if (how === 'side') { c.vlat = side * rnd(14, 20); c.vy = rnd(5, 9); }
+  else if (how === 'hit') { c.vlat = side * rnd(8, 14); c.vy = rnd(7, 11); }
+  else { c.vlat = side * rnd(3, 9); c.vy = rnd(11, 16); }
+  c.spinX = rnd(-7, 7); c.spinZ = rnd(-9, 9);
+  carWorld(c, F2); explode(F2.px, 1.2, F2.pz, c.len > 8 ? 2.2 : 1.2);
+  if (reward) { P.kills++; R.kills++; P.coins += 3; R.coins += 3; }
+}
+function boomAt(s, lat) { frameOf(s, lat, F2); explode(F2.px, 0.8, F2.pz, 1.1); Sfx.boom(); }
+function crash(c, cause) {
   P.lives--; P.inv = 2.0; P.combo = 0; P.comboT = 0; P.lapClean = false;
   P.speed *= 0.55; P.nitroOn = false; G.shake = 1;
-  c.state = 1; c.cs = 0; c.vlat = (c.lat >= P.lat ? 1 : -1) * rnd(8, 14); c.vy = rnd(7, 11);
-  c.spinX = rnd(-6, 6); c.spinZ = rnd(-8, 8); c.sl.visible = c.sr.visible = false;
+  if (c) destroyCar(c, 'hit', false);
   frameOf(pS(), P.lat, F1); emitSparks(F1.px, 1, F1.pz, 40);
   Sfx.crash(); vib([70, 40, 90]);
   el.flash.classList.remove('hit'); void el.flash.offsetWidth; el.flash.classList.add('hit');
-  banner('פגיעה!', 'bad');
+  banner(cause === 'mine' ? 'מוקש!' : cause === 'cop' ? 'השוטר פגע בך!' : 'פגיעה!', 'bad');
   if (P.lives <= 0) {
     P.alive = false; G.state = 'dying'; G.dyingT = 0;
     Sfx.crash();
   }
+}
+const RAM_F = { sedan: 1, moto: 1, van: 1, bus: 2, truck: 3 }, RAM_S = { sedan: 1, moto: 1, van: 2, bus: 3, truck: 3 };
+function ram(c, kind) {
+  destroyCar(c, kind, true);
+  P.speed *= kind === 'front' ? 0.94 : 0.975;
+  const pts = 200 * (c.len > 8 ? 2 : 1); P.score += pts; P.nitro = Math.min(100, P.nitro + 8);
+  G.shake = Math.max(G.shake, 0.5); Sfx.ram(); vib(25);
+  banner((kind === 'front' ? 'ניגוח חזית! ' : 'ניגוח צד! ') + ltr('+' + pts), 'big');
+}
+function placeMine(s, lat, owner) {
+  const mi = mines.find((q) => !q.active); if (!mi) return null;
+  mi.active = true; mi.s = mod(s, L); mi.lat = lat; mi.owner = owner; mi.t = 0; return mi;
+}
+function pickTarget() {
+  const lv = upLvl('sight'); if (!lv) return null;
+  const lim = lv === 1 ? LANE_W * 0.65 : lv === 2 ? LANE_W * 1.6 : 99, ps = pS();
+  let best = null, bd = 1e9;
+  for (const c of traffic) {
+    if (!c.active || c.state !== 0) continue;
+    const rel = signedRel(c.s, ps);
+    if (rel < 8 || rel > 220 || Math.abs(c.lat - P.lat) > lim) continue;
+    if (rel < bd) { bd = rel; best = c; }
+  }
+  return best;
+}
+function fireMissile() {
+  if (G.state !== 'play' || P.missiles <= 0 || G.wCool > 0) return;
+  const m = missiles.find((q) => !q.active); if (!m) return;
+  const tgt = pickTarget(), s0 = pS() + 3.2;
+  Object.assign(m, { active: true, s: s0, ps: s0, lat: P.lat, speed: P.speed + 55 + upLvl('sight') * 10, life: 3.2, target: tgt });
+  m.g.visible = true; P.missiles--; G.wCool = 0.22; hc.ammo = null; Sfx.missile(); vib(15);
+}
+function dropMine() {
+  if (G.state !== 'play' || P.mines <= 0 || G.wCool > 0) return;
+  if (!placeMine(pS() - 3.8, P.lat, 0)) return;
+  P.mines--; G.wCool = 0.3; hc.ammo = null; Sfx.mine(); vib(10);
+}
+function spawnCop() {
+  const cp = cops.find((q) => !q.active); if (!cp) return;
+  const s0 = mod(pS() - 150, L);
+  Object.assign(cp, { active: true, s: s0, ps: s0, lat: P.lat, speed: P.speed + 12, age: 0, rel: -150 });
+  cp.g.visible = true; banner('שוטר רודף!', 'bad');
+}
+function weaponsTick(dt, ps, dying) {
+  G.wCool = Math.max(0, G.wCool - dt);
+  G.target = dying ? null : pickTarget();
+
+  /* missiles */
+  for (const m of missiles) {
+    if (!m.active) continue;
+    m.ps = m.s; m.life -= dt;
+    if (m.target && (!m.target.active || m.target.state !== 0)) m.target = null;
+    if (m.target) m.lat = damp(m.lat, m.target.lat, 8, dt);
+    m.s = mod(m.s + m.speed * dt, L);
+    let hit = false;
+    for (const c of traffic) {
+      if (!c.active || c.state !== 0) continue;
+      if (Math.abs(signedRel(c.s, m.s)) < c.len / 2 + 1.6 && Math.abs(c.lat - m.lat) < c.wid / 2 + 1.0) {
+        destroyCar(c, 'missile', true); P.score += 150; Sfx.boom(); banner('פגיעה בטיל! ' + ltr('+150'), 'nm'); hit = true; break;
+      }
+    }
+    if (!hit) for (const mi of mines) {
+      if (!mi.active) continue;
+      if (Math.abs(signedRel(mi.s, m.s)) < 3 && Math.abs(mi.lat - m.lat) < 2) { mi.active = false; boomAt(mi.s, mi.lat); P.score += 60; hit = true; break; }
+    }
+    if (hit || m.life <= 0 || signedRel(m.s, ps) > 260) { m.active = false; m.g.visible = false; }
+  }
+
+  /* mines */
+  for (const mi of mines) {
+    if (!mi.active) continue;
+    mi.t += dt;
+    const rel = signedRel(mi.s, ps);
+    if (rel < -240 || rel > 360) { mi.active = false; continue; }
+    for (const c of traffic) {
+      if (!c.active || c.state !== 0) continue;
+      if (Math.abs(signedRel(c.s, mi.s)) < c.len / 2 + 0.9 && Math.abs(c.lat - mi.lat) < c.wid / 2 + 1.0) {
+        mi.active = false; destroyCar(c, 'mine', true); P.score += 120; Sfx.boom(); banner('מוקש פגע! ' + ltr('+120'), 'nm'); break;
+      }
+    }
+    if (!mi.active) continue;
+    for (const cp of cops) {
+      if (!cp.active) continue;
+      if (Math.abs(signedRel(cp.s, mi.s)) < 3.2 && Math.abs(cp.lat - mi.lat) < 2.3) {
+        mi.active = false; cp.active = false; cp.g.visible = false; boomAt(cp.s, cp.lat);
+        P.score += 500; P.kills++; R.kills++; P.coins += 10; R.coins += 10; banner('שוטר הושמד! ' + ltr('+500'), 'big'); break;
+      }
+    }
+    if (!mi.active) continue;
+    if (mi.owner === 1 && P.alive && P.inv <= 0 && !dying && Math.abs(rel) < 2.4 && Math.abs(mi.lat - P.lat) < 1.9) {
+      mi.active = false; boomAt(mi.s, mi.lat); crash(null, 'mine');
+    }
+  }
+
+  /* police chasers */
+  if (!dying && P.lapsDone >= 1) { G.copT -= dt; if (G.copT <= 0) { G.copT = rnd(24, 36); spawnCop(); } }
+  G.copNear = null;
+  for (const cp of cops) {
+    if (!cp.active) continue;
+    cp.ps = cp.s; cp.age += dt;
+    const rel0 = signedRel(cp.s, ps);
+    const want = rel0 < -70 ? P.speed + 16 : rel0 < -10 ? P.speed + 6 : P.speed + 1;
+    cp.speed = damp(cp.speed, want, 2, dt);
+    cp.lat = damp(cp.lat, P.lane * LANE_W, rel0 > -25 ? 3.0 : 1.2, dt);
+    cp.s = mod(cp.s + cp.speed * dt, L);
+    let rel = signedRel(cp.s, ps);
+    if (rel > -3.4) {
+      if (!dying && P.alive && P.inv <= 0 && Math.abs(cp.lat - P.lat) < 1.9) {
+        cp.active = false; cp.g.visible = false; boomAt(cp.s, cp.lat); crash(null, 'cop'); continue;
+      }
+      cp.s = mod(ps - 3.4, L); rel = -3.4;
+    }
+    cp.rel = rel;
+    if (cp.age > 28 || rel < -300) { cp.active = false; cp.g.visible = false; continue; }
+    if (G.copNear === null || -rel < G.copNear) G.copNear = -rel;
+  }
+  if (G.copNear !== null) { G.sirenT -= dt; if (G.sirenT <= 0) { G.sirenT = 0.38; G.sirenPh ^= 1; Sfx.siren(G.sirenPh); } }
 }
 function frameOf(s, lat, o) { Track.frame(s, o); o.px = Track.worldX(o, lat); o.pz = Track.worldZ(o, lat); return o; }
 
@@ -1168,13 +1424,21 @@ function runTick(dt) {
     const prevRel = c.rel; c.rel = rel;
     if (dying) continue;
     const dl = Math.abs(c.lat - P.lat), lx = (c.len + 4.6) / 2, wx = (c.wid + 1.95) / 2;
-    if (P.inv <= 0 && Math.abs(rel) < lx - 0.2 && dl < wx - 0.12) { c.passed = true; crash(c); if (G.state === 'dying') break; }
+    if (P.inv <= 0 && Math.abs(rel) < lx - 0.2 && dl < wx - 0.12) {
+      c.passed = true;
+      const ox = lx - Math.abs(rel), oy = wx - dl, kind = ox < oy ? (rel > 0 ? 'front' : 'rear') : 'side';
+      if (kind === 'front' && upLvl('ramF') >= RAM_F[c.type]) ram(c, 'front');
+      else if (kind === 'side' && upLvl('ramS') >= RAM_S[c.type]) ram(c, 'side');
+      else { crash(c, 'car'); if (G.state === 'dying') break; }
+    }
     else if (!c.passed && prevRel > 0 && rel <= 0) {
       c.passed = true;
       const gap = dl - wx;
       if (P.inv <= 0 && gap > -0.01 && gap < 2.4) nearMiss(c, gap);
     }
   }
+
+  weaponsTick(dt, ps, dying);
 
   /* coins */
   if (!dying) for (let i = 0; i < COIN_N; i++) {
@@ -1193,10 +1457,11 @@ function runTick(dt) {
       R.cleanLaps++;
       const bonus = 500 * P.lapsDone; P.score += bonus;
       let extra = '';
-      if (P.lives < 3) { P.lives++; extra = ' · +♥'; }
+      if (P.lives < P.maxLives) { P.lives++; extra = ' · +♥'; }
       banner('הקפה ' + ltr(P.lapsDone) + ' ללא נזק! ' + ltr('+' + bonus + extra), 'big');
     } else banner('הקפה ' + ltr(P.lapsDone), 'ok');
     P.lapClean = true; P.nitro = Math.min(100, P.nitro + 30); Sfx.lap(); vib([20, 30, 20]);
+    P.missiles = Math.min(3 + 2 * upLvl('missiles'), P.missiles + 1); P.mines = Math.min(2 + 2 * upLvl('mines'), P.mines + 1); hc.ammo = null;
   }
 
   /* missions */
@@ -1223,7 +1488,7 @@ function tick(dt) {
    Rendering
    ===================================================================== */
 const interp = (a, b, t) => { let d = b - a; if (d < -L / 2) d += L; else if (d > L / 2) d -= L; return a + d * t; };
-const tmpM = new THREE.Matrix4(), tmpQ = new THREE.Quaternion(), tmpS = new THREE.Vector3(1, 1, 1), tmpP = new THREE.Vector3(), tmpE = new THREE.Euler(), UP = new THREE.Vector3(0, 1, 0);
+const tmpM = new THREE.Matrix4(), tmpQ = new THREE.Quaternion(), tmpS = new THREE.Vector3(1, 1, 1), tmpP = new THREE.Vector3(), tmpE = new THREE.Euler(), UP = new THREE.Vector3(0, 1, 0), tmpS2 = new THREE.Vector3(1, 1, 1), mineRed = new THREE.Color(0xff2e3a), mineCyan = new THREE.Color(0x19e3ff);
 let camT = 0;
 function render(alpha, dt) {
   camT += dt;
@@ -1256,6 +1521,50 @@ function render(alpha, dt) {
     c.g.rotation.set(c.rx, yaw, c.rz);
   }
 
+  /* weapons */
+  for (const m of missiles) {
+    if (!m.active) continue;
+    Track.frame(interp(m.ps, m.s, alpha), F2);
+    m.g.position.set(Track.worldX(F2, m.lat), 0, Track.worldZ(F2, m.lat));
+    m.g.rotation.set(0, Math.atan2(F2.tx, F2.tz), 0);
+    m.fl.scale.set(1, 1, 0.8 + Math.random() * 0.6);
+  }
+  for (let i = 0; i < MINE_N; i++) {
+    const mi = mines[i];
+    if (!mi.active) { if (mi.shown) { mineBase.setMatrixAt(i, hideM); mineLamp.setMatrixAt(i, hideM); mi.shown = false; } continue; }
+    Track.frame(mi.s, F3);
+    tmpP.set(Track.worldX(F3, mi.lat), 0.15, Track.worldZ(F3, mi.lat));
+    tmpQ.setFromAxisAngle(UP, Math.atan2(F3.tx, F3.tz));
+    tmpM.compose(tmpP, tmpQ, tmpS); mineBase.setMatrixAt(i, tmpM);
+    const on = Math.sin(camT * 8 + i * 2) > -0.2 ? 1 : 0.25;
+    tmpM.compose(tmpP, tmpQ, tmpS2.set(on, on, on)); mineLamp.setMatrixAt(i, tmpM);
+    mineLamp.setColorAt(i, mi.owner ? mineRed : mineCyan); mi.shown = true;
+  }
+  mineBase.instanceMatrix.needsUpdate = true; mineLamp.instanceMatrix.needsUpdate = true;
+  if (mineLamp.instanceColor) mineLamp.instanceColor.needsUpdate = true;
+  for (const cp of cops) {
+    if (!cp.active) continue;
+    Track.frame(interp(cp.ps, cp.s, alpha), F2);
+    cp.g.position.set(Track.worldX(F2, cp.lat), 0, Track.worldZ(F2, cp.lat));
+    cp.g.rotation.set(0, Math.atan2(F2.tx, F2.tz), 0);
+    const ph = Math.sin(camT * 14) > 0; cp.sr.visible = ph; cp.sb.visible = !ph;
+  }
+  for (const e of expl) {
+    if (e.t < 0) continue;
+    e.t += dt; const k = e.t / 0.55;
+    if (k >= 1) { e.t = -1; e.m.visible = false; continue; }
+    e.m.scale.setScalar(e.size * (1.2 + k * 6)); e.m.material.opacity = (1 - k) * 0.9;
+  }
+  const tg = G.state === 'play' ? G.target : null;
+  if (tg && tg.active) {
+    Track.frame(interp(tg.ps, tg.s, alpha), F2);
+    const tl = lerp(tg.plat, tg.lat, alpha);
+    reticle.position.set(Track.worldX(F2, tl), 1.5, Track.worldZ(F2, tl));
+    reticle.lookAt(camera.position);
+    reticle.scale.setScalar((1 + 0.12 * Math.sin(camT * 10)) * (tg.len > 8 ? 2.2 : 1.3));
+    reticle.visible = true;
+  } else reticle.visible = false;
+
   /* coins */
   let cm = false;
   for (let i = 0; i < COIN_N; i++) {
@@ -1283,7 +1592,7 @@ function render(alpha, dt) {
   if (Math.abs(camera.fov - fov) > 0.05) { camera.fov = fov; camera.updateProjectionMatrix(); }
   sky.position.copy(camera.position); stars.position.copy(camera.position);
   camera.getWorldDirection(tmpP); tmpP.y = 0; tmpP.normalize();
-  signGrp.position.set(camera.position.x + tmpP.x * 430, camera.position.y + 215, camera.position.z + tmpP.z * 430);
+  signGrp.position.set(camera.position.x + tmpP.x * 430, camera.position.y + 191, camera.position.z + tmpP.z * 430);
   signGrp.rotation.y = Math.atan2(-tmpP.x, -tmpP.z);
   let fl = 0.92 + 0.08 * Math.sin(camT * 3.1);
   if (Math.sin(camT * 1.9) * Math.sin(camT * 17.3) > 0.9) fl = 0.4;
@@ -1345,8 +1654,15 @@ function updateHud(dt) {
   setText('kmh', el.kmh, String(Math.round(P.speed * 3.6)));
   setText('coins', el.coinsRun, String(P.coins));
   setText('lap', el.lap, 'LAP ' + (P.lapsDone + 1));
-  const lives = P.lives;
-  if (hc.hearts !== lives) { hc.hearts = lives; heartEls.forEach((h, i) => h.classList.toggle('off', i >= lives)); }
+  const lives = P.lives, hk = lives + '/' + P.maxLives;
+  if (hc.hearts !== hk) { hc.hearts = hk; heartEls.forEach((h, i) => { h.style.display = i < P.maxLives ? '' : 'none'; h.classList.toggle('off', i >= lives); }); }
+  const ak = P.missiles + ':' + P.mines;
+  if (hc.ammo !== ak) { hc.ammo = ak; el.ms.textContent = P.missiles; el.mn.textContent = P.mines; el.bMs.classList.toggle('empty', P.missiles <= 0); el.bMn.classList.toggle('empty', P.mines <= 0); }
+  const cn = G.copNear;
+  if (cn !== null && G.state === 'play') {
+    el.warn.classList.remove('hidden'); el.siren.classList.add('on');
+    const t = 'שוטר מאחור ' + ltr(Math.round(cn) + 'מ׳'); if (hc.warn !== t) { hc.warn = t; el.warnTxt.textContent = t; }
+  } else { el.warn.classList.add('hidden'); el.siren.classList.remove('on'); }
   const nw = Math.round(P.nitro) + '%';
   if (hc.nitroW !== nw) { hc.nitroW = nw; el.nitroFill.style.width = nw; }
   const ncls = P.nitroOn ? 'on' : P.nitro >= 25 ? 'ready' : '';
@@ -1429,6 +1745,8 @@ window.addEventListener('keydown', (e) => {
   else if (k === 'ArrowRight' || k === 'd' || k === 'D') act.lane(1);
   else if (k === 'ArrowUp' || k === 'w' || k === 'W' || k === ' ') { if (G.state === 'menu') $('#btnPlay').click(); else act.nitro(); }
   else if (k === 'ArrowDown' || k === 's' || k === 'S') act.brake();
+  else if (k === 'm' || k === 'M' || k === 'f' || k === 'F') act.missile();
+  else if (k === 'x' || k === 'X' || k === 'b' || k === 'B') act.mine();
   else if (k === 'p' || k === 'P' || k === 'Escape') { G.state === 'paused' ? resumeGame() : pauseGame(); }
   else if (k === 'Enter' && G.state === 'over') startRun();
 });
@@ -1437,6 +1755,9 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) { pau
 /* =====================================================================
    UI wiring
    ===================================================================== */
+const wbind = (node, fn) => node.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); Sfx.init(); fn(); });
+wbind($('#btnMissile'), () => act.missile());
+wbind($('#btnMine'), () => act.mine());
 function show(id, on) { $('#' + id).classList.toggle('hidden', !on); }
 const muteBtns = [$('#btnMute1'), $('#btnMute2')];
 const syncMute = () => muteBtns.forEach((b) => (b.textContent = save.muted ? '🔇' : '🔊'));
@@ -1469,6 +1790,25 @@ function renderGarage() {
       host.appendChild(b);
     });
   };
+  const up = $('#gUp'); up.innerHTML = '';
+  UPGRADES.forEach((u) => {
+    const lvl = upLvl(u.id), max = u.cost.length, row = document.createElement('div');
+    row.className = 'up';
+    const desc = lvl >= max ? u.d[max - 1] : u.d[lvl];
+    row.innerHTML = '<div class="ut"><b>' + u.n + '</b><small>' + desc + '</small><div class="pips">' + u.cost.map((_, i) => '<span class="pip' + (i < lvl ? ' on' : '') + '"></span>').join('') + '</div></div>';
+    if (lvl >= max) { const m = document.createElement('div'); m.className = 'maxed'; m.textContent = 'מקסימום'; row.appendChild(m); }
+    else {
+      const price = u.cost[lvl], b = document.createElement('button');
+      b.className = 'buy' + (save.coins < price ? ' no' : '');
+      b.innerHTML = '<span class="coin"></span>' + price;
+      b.addEventListener('click', () => {
+        if (save.coins < price) { toast('אין מספיק מטבעות'); return; }
+        save.coins -= price; save.up[u.id] = lvl + 1; persist(); refreshPlayerLook(); Sfx.ui(); renderGarage();
+      });
+      row.appendChild(b);
+    }
+    up.appendChild(row);
+  });
   build($('#gPaint'), PAINTS, 'ownPaint', 'paint', refreshPlayerLook);
   build($('#gFlame'), FLAMES, 'ownFlame', 'flame', refreshPlayerLook);
 }
@@ -1488,7 +1828,11 @@ window.RingRush = {
   state: () => ({ state: G.state, dist: P.dist, speed: P.speed, lives: P.lives, score: P.score, lap: P.lapsDone, lane: P.lane, lat: P.lat, combo: P.combo, coins: P.coins, q: qLevel, near: R.near, inv: P.inv }),
   cars: () => traffic.filter((c) => c.active && c.state === 0).map((c) => ({ rel: signedRel(c.s, pS()), lat: c.lat, len: c.len, wid: c.wid, speed: c.speed, type: c.type, lane: c.lane })),
   coinsNear: () => coins.filter((c) => c.active).map((c) => ({ rel: signedRel(c.s, pS()), lat: c.lat })),
-  dbg: { scene, camera, road, ground, roadTex }, act, setLaps(n) { P.dist = n * L; P.pd = P.dist; P.lapsDone = n; }
+  dbg: { scene, camera, road, ground, roadTex }, act, fire: fireMissile, mine: dropMine, spawnCop, setUp(k, v) { save.up[k] = v; refreshPlayerLook(); },
+  cops: () => cops.filter((c) => c.active).map((c) => ({ rel: signedRel(c.s, pS()), lat: c.lat })),
+  mines: () => mines.filter((m) => m.active).map((m) => ({ rel: signedRel(m.s, pS()), lat: m.lat, owner: m.owner })),
+  ammo: () => ({ missiles: P.missiles, mines: P.mines, kills: P.kills, maxLives: P.maxLives }),
+  setLaps(n) { P.dist = n * L; P.pd = P.dist; P.lapsDone = n; }
 };
 })();
 </script>
